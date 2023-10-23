@@ -6,3 +6,4 @@ google-api-python-client
 selenium
 webdriver_manager
 bs4
+chromedriver-binary==77.0.3865.40.0
