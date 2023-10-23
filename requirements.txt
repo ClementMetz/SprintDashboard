@@ -7,3 +7,4 @@ selenium
 webdriver_manager
 bs4
 chromedriver-binary==77.0.3865.40.0
+gunicorn==19.9.0
