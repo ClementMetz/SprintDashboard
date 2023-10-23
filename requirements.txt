@@ -1,0 +1,8 @@
+functions-framework==3.*
+numpy
+scipy
+google
+google-api-python-client
+selenium
+webdriver_manager
+bs4
