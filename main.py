@@ -1,13 +1,25 @@
-import gspread
+
 import os
 from flask import Flask
 from flask import request
 from selenium import webdriver
 from Request import requestffa
+from googleapiclient.discovery import build
+from googleapiclient.errors import HttpError
 
 
 app = Flask(__name__)
 
+def get_sheet():
+    try:
+        service = build('sheets', 'v4')
+        # Call the Sheets API
+        sheet = service.spreadsheets()
+
+    except HttpError as err:
+        print(err)
+    
+    return(sheet)
 
 def build_sheet_output(data,alias):
     output=[]
@@ -46,15 +58,14 @@ def main():
 
     data = requestffa(driver,athletename,firstname,gender,by_licence_nb,licence_nb,'')
     output = build_sheet_output(data,alias)
-
-    gc = gspread.service_account(filename='sprint-383421-757a3d429705.json')
-    sheet = gc.open_by_key(sheet_id)
-    dashboard = sheet.worksheet("Dashboard")
-
-    dashboard.batch_clear(["K{}".format(line_nb)])
-    dashboard.update('K{}'.format(line_nb),output[1:-1])
+    sheet = get_sheet()
+    sheet.values().clear(spreadsheetId=sheet_id,
+                range="Dashboard!K{}".format(line_nb)).execute()    
+    sheet.values().update(spreadsheetId=sheet_id,
+                range="Dashboard!K{}".format(line_nb),valueInputOption = "USER_ENTERED",body= {'values' : [[output[1:-1]]]}).execute() #output[1:-1]
     if output!="": #found existing athlete
-        dashboard.update('F{}'.format(line_nb),False)
+        sheet.values().update(spreadsheetId=sheet_id,
+                range="Dashboard!F{}".format(line_nb),valueInputOption = "USER_ENTERED",body= {'values' : [[False]]}).execute() #Delete option Scrape
 
     return "Done!"
 

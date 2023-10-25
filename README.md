@@ -5,7 +5,7 @@ SprintDashboard est un projet d'analyse de données de performances sportives à
 
 ## Analyse de performances
 
-On se rend dans l'onglet Dashboard ;
+On se rend dans l'onglet Dashboard :
 
 <div align="center">
 <p float="center">
@@ -15,7 +15,7 @@ On se rend dans l'onglet Dashboard ;
 
 ### Tableau des athlètes
 
-On renseigne les informations des athlètes à afficher, nom, prenom, sexe, un numéro de licence facultatif pour éviter les homonymies et un alias qui sera utilisé par le graphique. On coche la case "Search" pour préparer la recherche. Une fois que tous les athlètes sont renseignés, on clique sur "SEARCH BASESFFA". Le script met un certain temps à tourner (une vingtaine de secondes par athlète). Une mise à jour future permettra d'accélérer le traitement.
+On renseigne les informations des athlètes à afficher, nom, prenom, sexe, un numéro de licence facultatif pour éviter les homonymies et un alias qui sera utilisé par le graphique. On coche la case "Search" pour préparer la recherche. Une fois que tous les athlètes sont renseignés, on clique sur "SEARCH BASESFFA". Le script met un certain temps à tourner (une vingtaine de secondes par athlète). Le script décoche automatiquement la case "Search" à chaque athlète trouvé. Une mise à jour future permettra d'accélérer le traitement et d'alléger la feuille.
 
 ### Affichage des données
 
