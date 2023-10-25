@@ -3,12 +3,10 @@ from datetime import datetime
 from bs4 import BeautifulSoup
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select
-import sys
-sys.path.append('..')
 from auxiliary import athle_regressor,standardize_event,clean_up_perf
 
 
-def request(driver,athletename,firstname,gender,by_licence_nb=False,licence_nb=0,clubname=''):
+def requestffa(driver,athletename,firstname,gender,by_licence_nb=False,licence_nb=0,clubname=''):
     regressor = athle_regressor()
     now = datetime.now().year
     element = driver.find_element(By.XPATH,'/html/body/div/div[2]/table/tbody/tr/td[4]')

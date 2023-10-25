@@ -1,6 +1,5 @@
 from datetime import timedelta
 from datetime import datetime
-import numpy as np
 from math import sqrt
 
 
