@@ -3,23 +3,20 @@ import os
 from flask import Flask
 from flask import request
 from selenium import webdriver
-#from Request import requestffa
 from request2 import requestffa
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
-from google.cloud import bigquery
-"""
-#from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
+from google_auth_oauthlib.flow import InstalledAppFlow
+from google.cloud import bigquery
 
 
+app = Flask(__name__)
 
-
-
-#SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
-#credential_path = "sprint-383421-25956e952f47.json"
-#os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = credential_path
+SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
+credential_path = "sprint-383421-25956e952f47.json"
+os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = credential_path
 
 def get_credentials():
     creds = None
@@ -54,9 +51,7 @@ def get_clients_with_credentials(): #Get API clients (local with account service
         print(err)
     
     return(sheet_client,bigquery_client)
-"""
 
-app = Flask(__name__)
 
 def get_clients(): #Get API clients
     try:
@@ -67,8 +62,8 @@ def get_clients(): #Get API clients
     except HttpError as err:
         print(err)
     
-    #except:
-        #sheet_client,bigquery_client = get_clients_with_credentials()
+    except:
+        sheet_client,bigquery_client = get_clients_with_credentials()
     
     return(sheet_client,bigquery_client)
 
@@ -162,7 +157,6 @@ def main():
 
     else:
         output = build_sheet_output(data,alias)
-        print(output)
         sheet_client.values().clear(spreadsheetId=sheet_id,
                     range="local_data!L{}".format(line_nb)).execute()    
         sheet_client.values().update(spreadsheetId=sheet_id,
@@ -174,4 +168,4 @@ def main():
     return "Done!"
 
 if __name__ == "__main__":
-    app.run(debug=True, host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
+    app.run(debug=False, host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
