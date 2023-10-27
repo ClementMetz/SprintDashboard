@@ -7,13 +7,15 @@ from selenium import webdriver
 from request2 import requestffa
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
+from google.cloud import bigquery
+"""
+#from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
-#from google_auth_oauthlib.flow import InstalledAppFlow
-from google.cloud import bigquery
 
 
-app = Flask(__name__)
+
+
 
 #SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
 #credential_path = "sprint-383421-25956e952f47.json"
@@ -52,7 +54,9 @@ def get_clients_with_credentials(): #Get API clients (local with account service
         print(err)
     
     return(sheet_client,bigquery_client)
+"""
 
+app = Flask(__name__)
 
 def get_clients(): #Get API clients
     try:
@@ -63,8 +67,8 @@ def get_clients(): #Get API clients
     except HttpError as err:
         print(err)
     
-    except:
-        sheet_client,bigquery_client = get_clients_with_credentials()
+    #except:
+        #sheet_client,bigquery_client = get_clients_with_credentials()
     
     return(sheet_client,bigquery_client)
 
