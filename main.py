@@ -16,7 +16,7 @@ app = Flask(__name__)
 
 SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
 credential_path = "sprint-383421-25956e952f47.json"
-os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = credential_path
+#os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = credential_path
 
 def get_credentials():
     creds = None
