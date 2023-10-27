@@ -15,7 +15,7 @@ from google.cloud import bigquery
 app = Flask(__name__)
 
 SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
-credential_path = "sprint-383421-25956e952f47.json"
+credential_path = "credentials.json"
 #os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = credential_path
 
 def get_credentials():
@@ -101,6 +101,7 @@ def main():
     driver.get(url)
 
     data = requestffa(driver,athletename,firstname,gender,by_licence_nb,licence_nb,'')
+    output = build_sheet_output(data,alias)
     sheet_client, bigquery_client = get_clients()
     
     if by_licence_nb:
@@ -153,10 +154,13 @@ def main():
         
         if entry_nb>0:
             bigquery_client.insert_rows(table_results, results_data)
+        
+        if output!="": #found existing athlete
+            sheet_client.values().update(spreadsheetId=sheet_id,
+                    range="Dashboard!F{}".format(line_nb),valueInputOption = "USER_ENTERED",body= {'values' : [[False]]}).execute() #Delete option Scrape
 
 
     else:
-        output = build_sheet_output(data,alias)
         sheet_client.values().clear(spreadsheetId=sheet_id,
                     range="local_data!L{}".format(line_nb)).execute()    
         sheet_client.values().update(spreadsheetId=sheet_id,

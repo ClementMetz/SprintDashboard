@@ -4,6 +4,7 @@ from bs4 import BeautifulSoup
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select
 from auxiliary import athle_regressor,standardize_event,clean_up_perf
+import hashlib
 
 
 def requestffa(driver,athletename,firstname,gender,by_licence_nb=False,licence_nb=0,clubname=''):
@@ -41,6 +42,8 @@ def requestffa(driver,athletename,firstname,gender,by_licence_nb=False,licence_n
             soup = BeautifulSoup(table.get_attribute('innerHTML'), 'html.parser')
             t = soup.get_text(separator='|||').split('\n')
             for i in range (2,len(t)):
+                primary_key = hashlib.sha256()
+                primary_key.update(t[i].encode())
                 l = t[i].split('|||')
                 if len(l)<=3: #clubline found
                     continue
@@ -74,8 +77,10 @@ def requestffa(driver,athletename,firstname,gender,by_licence_nb=False,licence_n
                     perf_chunks[3] = perf_chunks[3]+'0' #11"7 -> 11"70
                 for j in range(4):
                     perf_chunks[j] = int(perf_chunks[j])
+                
+                
 
-                entry = [str(licence_nb)+"_"+str(y)+"_"+str(i),licence_nb,event] + perf_chunks + [points,y,month,day]
+                entry = [primary_key.hexdigest(),licence_nb,event] + perf_chunks + [points,y,month,day]
                 
                 entries.append(entry)
 
