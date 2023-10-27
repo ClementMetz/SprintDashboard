@@ -1,4 +1,3 @@
-from datetime import timedelta
 from datetime import datetime
 from math import sqrt
 
@@ -39,6 +38,8 @@ def standardize_event(event,gender): #Second version
             event_features = 0.5
         elif "0.6 kg" in event or "600 g" in event or "0.6kg" in event or "600g" in event:
             event_features = 0.6
+        elif "0.7 kg" in event or "700 g" in event or "0.7kg" in event or "700g" in event:
+            event_features = 0.7
         elif "0.8 kg" in event or "800 g" in event or "0.8kg" in event or "800g" in event:
             event_features = 0.8
         elif "1.25 kg" in event  or "1.25kg" in event:
@@ -380,33 +381,6 @@ def standardize_event(event,gender): #Second version
     
     return(event,hidden_event)
     
-            
-            
-"""
-Polynomial interpolation results
-{'100mM':(24.53,- 834.9,7101),'200mM':(5.072,- 360.3, 6397),'400mM':(1.021, - 161.3, 6372),
-                          '400mHM':(0.5455, - 104.2, 4977),'110mHM':(7.676,- 395.7, 5102),'800mM':(0.1981, - 72.09, 6559.3)
-                          ,'1500mM':(0.04066, - 31.31, 6027),'3000mM':(0.008155,- 13.7,5752),'3000mscM':(0.004322,- 8.812, 4492),
-                         '5000walkM':(0.0004375,- 2.411, 3323),'highM':(32.69, 743.6,- 704),'poleM':(2.808,241.5,- 284.5),
-                         'longM':(1.588,191.1,- 493.3),'tripleM':(0.4479, 91.27, - 516.9),'shotM':(0.037,58.15,- 57.02),
-                         'discM':(0.003979, 17.9,- 27.25),'hammerM':(0.002642 ,14.98, - 21.22),'javM':(0.002538, 13.83,- 20.78),
-                         '100mW':(10.05, - 439.7, 4820.5),'200mW':(2.219, - 202.8 ,4625),'400mW':(0.3355, - 73.77, 4055),
-                         '400mHW':(0.2083,- 54.19,3523),'100mHW':(4.018, - 240, 3591),'800mW':(0.06873,- 34.38,4298),
-                         '1500mW':(0.0134,- 14.47,3908),'3000mW':(0.002541 ,- 6.096, 3657),'3000walkW':(0.0008818,- 3.3, 3086),
-                         'highW':(52.34, 793.2, - 573.1),'poleW':(3.769, 276.7, - 207.2),'longW':(2.067, 192.9, - 232.7),
-                         'tripleW':(0.4004, 90.87, - 234),'shotW':(0.05937, 60.42, - 23.91),'discW':(0.004131, 17.93,- 18.95),
-                         'hammerW':(0.002993, 15.74, - 22.75),'javW':(0.004627, 18 ,- 18.1)}
-constants = list(self.constants[event])
-constants.reverse()
-poly = np.polynomial.Polynomial(constants)
-
-            if perf < np.real(max(poly.roots())): #perf worse than 0 pts
-                return(0)
-            if perf > np.real(min(poly.roots())): #perf worse than 0 pts
-                return(0)
-return(round(poly.__call__(perf)))
-
-"""
 
 
 
@@ -612,6 +586,3 @@ def clean_up_perf(perf,event):
         perf = perf.split(' ')[0] #8m95 blabla (+1.7) -> 8m95
 
     return(perf)
-
-
-#test

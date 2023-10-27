@@ -1,1 +1,3 @@
-sprint-383421-757a3d429705.json
+*.json
+__pycache__
+*.bat
