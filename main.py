@@ -9,15 +9,15 @@ from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
-from google_auth_oauthlib.flow import InstalledAppFlow
+#from google_auth_oauthlib.flow import InstalledAppFlow
 from google.cloud import bigquery
 
 
 app = Flask(__name__)
 
-SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
-credential_path = "sprint-383421-25956e952f47.json"
-os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = credential_path
+#SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
+#credential_path = "sprint-383421-25956e952f47.json"
+#os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = credential_path
 
 def get_credentials():
     creds = None
