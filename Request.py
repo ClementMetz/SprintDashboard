@@ -6,7 +6,7 @@ from selenium.webdriver.support.ui import Select
 from auxiliary import athle_regressor,standardize_event,clean_up_perf
 
 
-def requestffa(driver,athletename,firstname,gender,by_licence_nb=False,licence_nb=0,clubname=''):
+def requestffa(driver,athletename,firstname,gender,by_licence_nb=False,licence_nb=0,clubname=''): ### Old version of requestffa
     regressor = athle_regressor()
     now = datetime.now().year
     element = driver.find_element(By.XPATH,'/html/body/div/div[2]/table/tbody/tr/td[4]')

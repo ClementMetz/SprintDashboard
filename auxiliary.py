@@ -42,6 +42,8 @@ def standardize_event(event,gender): #Second version
             event_features = 0.7
         elif "0.8 kg" in event or "800 g" in event or "0.8kg" in event or "800g" in event:
             event_features = 0.8
+        elif "1.0 kg" in event or "1000 g" in event or "1.0kg" in event or "1000g" in event:
+            event_features = 1
         elif "1.25 kg" in event  or "1.25kg" in event:
             event_features = 1.25
         elif "1.5 kg" in event  or "1.5kg" in event:
