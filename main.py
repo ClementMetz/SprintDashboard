@@ -10,13 +10,15 @@ from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.cloud import bigquery
+import socket
 
 
 app = Flask(__name__)
 
 SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
 credential_path = "credentials.json"
-os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = credential_path
+if socket.gethostname() == 'PC-de-Clement':
+    os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = credential_path
 
 def get_credentials():
     creds = None
@@ -153,9 +155,9 @@ def main():
                 entry_nb+=1
         #print(results_data)
         if entry_nb>0:
-            print("Insertion")
             error = bigquery_client.insert_rows(table_results, results_data)
-            print(error)
+            if len(error)!=0:
+                print("Error when inserting rows: ",error)
         
         if output!="": #found existing athlete
             sheet_client.values().update(spreadsheetId=sheet_id,
