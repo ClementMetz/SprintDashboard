@@ -66,10 +66,10 @@ def requestffa(driver,athletename,firstname,gender,by_licence_nb=False,licence_n
                     elif len(l)==13: #wind
                         points = l[8]
                     else: #unknown points and event
-                        points = 0
+                        continue
                 
                 if type(points)!=int: #weird output for unknown event
-                    points = 0
+                    continue
 
                 perf = perf.replace("'",".").replace("m",".")
                 perf_chunks = perf.split(".")
