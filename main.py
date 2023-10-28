@@ -16,7 +16,7 @@ app = Flask(__name__)
 
 SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
 credential_path = "credentials.json"
-#os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = credential_path
+os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = credential_path
 
 def get_credentials():
     creds = None
@@ -151,9 +151,11 @@ def main():
                 results_data[entry_nb].append(date)
                 results_data[entry_nb].append(h*3600+mins*60+s+hund/100)
                 entry_nb+=1
-        
+        #print(results_data)
         if entry_nb>0:
-            bigquery_client.insert_rows(table_results, results_data)
+            print("Insertion")
+            error = bigquery_client.insert_rows(table_results, results_data)
+            print(error)
         
         if output!="": #found existing athlete
             sheet_client.values().update(spreadsheetId=sheet_id,
