@@ -494,7 +494,7 @@ class athle_regressor(): #IAAF 2017 points calculator
     
     
     def reg(self,event,perf): #perf given in seconds or meters or 'o' for no perf
-        if perf.lower().split(' ')[0] in ['o','','dq','dns','dnf','nm','nc','ab','x','0','*hb*','='] or 'inv' in perf.lower(): #no perf
+        if perf.lower().split(' ')[0] in ['o','','dq','dns','dnf','nm','nc','ab','x','0','*hb*','=','np'] or 'inv' in perf.lower(): #no perf
             return(0)
         resultShift,conversionFactor,pointShift = self.constants[event]
         if event in ['highM','poleM','longM','tripleM','shotM','discM','hammerM','javM','highW','poleW','longW','tripleW','shotW','discW','hammerW','javW','highMi','poleMi','longMi','tripleMi','shotMi','highWi','poleWi','longWi','tripleWi','shotWi']:
