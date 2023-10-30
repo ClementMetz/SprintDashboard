@@ -95,7 +95,7 @@ def main():
     if not by_licence_nb: #no licence data
         fake_licence = hashlib.sha256()
         fake_licence.update((firstname.lower()+athletename.lower()).encode())
-        licence_nb = str(int.from_bytes(fake_licence.digest()))
+        licence_nb = str(int.from_bytes(fake_licence.digest(),'big'))
 
     driver_options = webdriver.ChromeOptions()
     driver_options.add_argument("headless")
@@ -132,6 +132,7 @@ def main():
 
     #Check for duplicates in table
     results_data = data
+    scraped_length = len(data)
     test_tuple = tuple([str(x[0]) for x in results_data])
     query = f"SELECT DISTINCT id FROM `sprint-383421.{database_name}.{table_name}` WHERE id IN {test_tuple}"
     query_job = bigquery_client.query(query)
@@ -152,7 +153,7 @@ def main():
         if len(error)!=0:
             return('Error at insert : ',error)
     
-    if len(data)>0: #found existing athlete, update tickboxes asynchronously
+    if scraped_length>0: #found existing athlete, update tickboxes asynchronously
         sheet_client.values().update(spreadsheetId=sheet_id,
                 range="Dashboard!F{}".format(line_nb),valueInputOption = "USER_ENTERED",body= {'values' : [[False]]}).execute() #Delete option Scrape
         return('Done !')
