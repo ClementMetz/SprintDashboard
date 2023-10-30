@@ -75,8 +75,11 @@ def requestffa(driver,athletename,firstname,gender,by_licence_nb=False,licence_n
                     perf_chunks = [0]+perf_chunks
                 if len(perf_chunks[3])==1:
                     perf_chunks[3] = perf_chunks[3]+'0' #11"7 -> 11"70
-                for j in range(4):
-                    perf_chunks[j] = int(perf_chunks[j])
+                try: #check for failed clean-up, if failed skip the entry
+                    for j in range(4):
+                        perf_chunks[j] = int(perf_chunks[j])
+                except:
+                    continue
 
                 h,mins,s,hund = tuple(perf_chunks)
                 unit_perf = h*3600+mins*60+s+hund/100
