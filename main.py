@@ -11,6 +11,7 @@ from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.cloud import bigquery
 import socket
+import hashlib
 
 
 app = Flask(__name__)
@@ -91,6 +92,11 @@ def main():
     by_licence_nb = licence_nb!=''
     alias = request.args.get('alias','')
 
+    if not by_licence_nb: #no licence data
+        fake_licence = hashlib.sha256()
+        fake_licence.update((firstname.lower()+athletename.lower()).encode())
+        licence_nb = str(int.from_bytes(fake_licence.digest()))
+
     driver_options = webdriver.ChromeOptions()
     driver_options.add_argument("headless")
     driver_options.add_argument("disable-gpu")
@@ -101,79 +107,58 @@ def main():
 
     url = "https://bases.athle.fr/asp.net/accueil.aspx?frmbase=resultats"
     driver.get(url)
-
     data = requestffa(driver,athletename,firstname,gender,by_licence_nb,licence_nb,'')
-    output = build_sheet_output(data,alias)
     sheet_client, bigquery_client = get_clients()
+
+    #Insert athlete
+    database_name = 'competition_data'
+    table_name = 'athletes3'
+    table_ref_athletes = bigquery_client.dataset(database_name).table(table_name)
+    table_athletes = bigquery_client.get_table(table_ref_athletes)
+
+    athlete_data = [[licence_nb,by_licence_nb,athletename,firstname,gender]]
+    query = f"SELECT COUNT(*) FROM `sprint-383421.{database_name}.{table_name}` WHERE license_nb = '{licence_nb}'" #check if athlete already in table
+    query_job = bigquery_client.query(query)
+    result = query_job.result()
+    for row in result:
+        if row[0]==0: #Athlete not found in table
+            bigquery_client.insert_rows(table_athletes, athlete_data)
+
+
+    #Insert results
+    table_name = 'results_data2'
+    table_ref_results = bigquery_client.dataset(database_name).table(table_name)
+    table_results = bigquery_client.get_table(table_ref_results)
+
+    #Check for duplicates in table
+    results_data = data
+    test_tuple = tuple([str(x[0]) for x in results_data])
+    query = f"SELECT DISTINCT id FROM `sprint-383421.{database_name}.{table_name}` WHERE id IN {test_tuple}"
+    query_job = bigquery_client.query(query)
+    result = query_job.result()
+    #Remove duplicates in data
+    duplicates = [x[0] for x in result]
+    entry_nb=0
+    l = len(results_data)
+    while entry_nb < l:
+        if results_data[entry_nb][0] in duplicates:
+            del(results_data[entry_nb])
+            l-=1
+        else:
+            entry_nb+=1
+    #print(results_data)
+    if entry_nb>0:
+        error = bigquery_client.insert_rows(table_results, results_data)
+        if len(error)!=0:
+            return('Error at insert : ',error)
     
-    if by_licence_nb:
-
-        database_name = 'competition_data'
-        table_name = 'athletes'
-        # Référence à la table résultats
-        table_ref_athletes = bigquery_client.dataset(database_name).table(table_name)
-        table_athletes = bigquery_client.get_table(table_ref_athletes)
-
-        athlete_data = [[int(licence_nb),athletename,firstname,gender]]
-        query = f"SELECT COUNT(*) FROM `sprint-383421.{database_name}.{table_name}` WHERE licence_nb = {licence_nb}" #check if athlete already in table
-        query_job = bigquery_client.query(query)
-        result = query_job.result()
-        for row in result:
-            if row[0]==0:
-                bigquery_client.insert_rows(table_athletes, athlete_data)
-
-
-        # Reference to results table
-        table_name = 'results_data'
-        table_ref_results = bigquery_client.dataset(database_name).table(table_name)
-        table_results = bigquery_client.get_table(table_ref_results)
-
-        #Check for duplicates in table
-        results_data = data
-        test_tuple = tuple([str(x[0]) for x in results_data])
-        query = f"SELECT DISTINCT id FROM `sprint-383421.{database_name}.{table_name}` WHERE id IN {test_tuple}"
-        query_job = bigquery_client.query(query)
-        result = query_job.result()
-        #Remove duplicates in data
-        duplicates = [x[0] for x in result]
-        entry_nb=0
-        l = len(results_data)
-        while entry_nb < l:
-            if results_data[entry_nb][0] in duplicates:
-                del(results_data[entry_nb])
-                l-=1
-            else:
-                y,m,d = str(results_data[entry_nb][8]),str(results_data[entry_nb][9]),str(results_data[entry_nb][10])
-                if len(m)==1:
-                    m = '0'+m
-                if len(d)==1:
-                    d = '0'+d
-                date = y+"-"+m+"-"+d
-                h,mins,s,hund = results_data[entry_nb][3],results_data[entry_nb][4],results_data[entry_nb][5],results_data[entry_nb][6]
-                results_data[entry_nb].append(date)
-                results_data[entry_nb].append(h*3600+mins*60+s+hund/100)
-                entry_nb+=1
-        #print(results_data)
-        if entry_nb>0:
-            error = bigquery_client.insert_rows(table_results, results_data)
-            if len(error)!=0:
-                print("Error when inserting rows: ",error)
-        
-        if output!="": #found existing athlete
-            sheet_client.values().update(spreadsheetId=sheet_id,
-                    range="Dashboard!F{}".format(line_nb),valueInputOption = "USER_ENTERED",body= {'values' : [[False]]}).execute() #Delete option Scrape
-
-
-    else:
-        sheet_client.values().clear(spreadsheetId=sheet_id,
-                    range="local_data!L{}".format(line_nb)).execute()    
+    if len(data)>0: #found existing athlete, update tickboxes asynchronously
         sheet_client.values().update(spreadsheetId=sheet_id,
-                    range="local_data!L{}".format(line_nb),valueInputOption = "USER_ENTERED",body= {'values' : output}).execute() #output[1:-1]
-        if output!="": #found existing athlete
-            sheet_client.values().update(spreadsheetId=sheet_id,
-                    range="Dashboard!F{}".format(line_nb),valueInputOption = "USER_ENTERED",body= {'values' : [[False]]}).execute() #Delete option Scrape
+                range="Dashboard!F{}".format(line_nb),valueInputOption = "USER_ENTERED",body= {'values' : [[False]]}).execute() #Delete option Scrape
+        return('Done !')
+    
+    return('Done !')
 
-    return "Done!"
 
 if __name__ == "__main__":
     app.run(debug=False, host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))

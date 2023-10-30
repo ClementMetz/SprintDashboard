@@ -313,9 +313,9 @@ def standardize_event(event,gender): #Second version
                     s+=l[i]
                 event,hidden_event=s,s
         elif identifiers["marche"]:
-            if "3 000m" in event:
+            if "3 000m" in event or "3000m" in event:
                 event,hidden_event="3000walk"+gender,"3000walk"+gender
-            elif "5 000m" in event:
+            elif "5 000m" in event or "5000m" in event:
                 event,hidden_event="5000walk"+gender,"5000walk"+gender
                     
         elif "longueur" in event:
