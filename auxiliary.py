@@ -298,13 +298,13 @@ def standardize_event(event,gender): #Second version
                 event,hidden_event = "1500m"+gender,"1500m"+gender
             elif event[:4]=="mile":
                 event,hidden_event = "1mile"+gender,"1mile"+gender
-            elif event=="2 000m":
+            elif event[:6]=="2 000m":
                 event,hidden_event = "2000m"+gender,"2000m"+gender
-            elif event=="3 000m":
+            elif event[:6]=="3 000m":
                 event,hidden_event = "3000m"+gender,"3000m"+gender
-            elif event=="5 000m":
+            elif event[:6]=="5 000m":
                 event,hidden_event = "5000m"+gender,"5000m"+gender
-            elif event=="10 000m":
+            elif event[:7]=="10 000m":
                 event,hidden_event = "10000m"+gender,"10000m"+gender
             else: #unknown distance
                 l = (event.split('/')[0]).split(' ')
