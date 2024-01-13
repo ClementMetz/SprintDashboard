@@ -134,7 +134,10 @@ def main():
     results_data = data
     scraped_length = len(data)
     test_tuple = tuple([str(x[0]) for x in results_data])
-    query = f"SELECT DISTINCT id FROM `sprint-383421.{database_name}.{table_name}` WHERE id IN {test_tuple}"
+    if len(tuple)==1:
+        query = f"SELECT DISTINCT id FROM `sprint-383421.{database_name}.{table_name}` WHERE id = '{test_tuple[0]}'"
+    else:
+        query = f"SELECT DISTINCT id FROM `sprint-383421.{database_name}.{table_name}` WHERE id IN {test_tuple}"
     query_job = bigquery_client.query(query)
     result = query_job.result()
     #Remove duplicates in data
@@ -149,6 +152,7 @@ def main():
             entry_nb+=1
     #print(results_data)
     if entry_nb>0:
+        print(results_data)
         error = bigquery_client.insert_rows(table_results, results_data)
         if len(error)!=0:
             return('Error at insert : ',error)
