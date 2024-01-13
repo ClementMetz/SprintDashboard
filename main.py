@@ -134,7 +134,7 @@ def main():
     results_data = data
     scraped_length = len(data)
     test_tuple = tuple([str(x[0]) for x in results_data])
-    if len(tuple)==1:
+    if len(test_tuple)==1:
         query = f"SELECT DISTINCT id FROM `sprint-383421.{database_name}.{table_name}` WHERE id = '{test_tuple[0]}'"
     else:
         query = f"SELECT DISTINCT id FROM `sprint-383421.{database_name}.{table_name}` WHERE id IN {test_tuple}"
