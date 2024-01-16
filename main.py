@@ -152,14 +152,13 @@ def main():
             entry_nb+=1
     #print(results_data)
     if entry_nb>0:
-        print(results_data)
         error = bigquery_client.insert_rows(table_results, results_data)
         if len(error)!=0:
             return('Error at insert : ',error)
 
     if scraped_length>0: #found existing athlete, update tickboxes asynchronously
         sheet_client.values().update(spreadsheetId=sheet_id,
-                range="Dashboard!F{}".format(line_nb),valueInputOption = "USER_ENTERED",body= {'values' : [[False]]}).execute() #Delete option Scrape
+                range="Dashboard!G{}".format(line_nb),valueInputOption = "USER_ENTERED",body= {'values' : [[False]]}).execute() #Delete option Scrape
     
     return('Done !')
 
